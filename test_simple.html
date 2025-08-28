@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .result { padding: 15px; margin: 10px 0; background: #f0f0f0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Quick Dashboard Test</h1>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '🔄 Testing...';
+            
+            try {
+                // Test the exact same URL your dashboard uses
+                const response = await fetch('http://localhost:5001/api/summary');
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <h3>✅ SUCCESS!</h3>
+                    <p><strong>Total Spend:</strong> $${data.total_spend.toLocaleString()}</p>
+                    <p><strong>Transactions:</strong> ${data.total_transactions.toLocaleString()}</p>
+                    <p><strong>Vendors:</strong> ${data.unique_vendors}</p>
+                    <p><strong>Average:</strong> $${data.avg_transaction.toFixed(2)}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<h3>❌ ERROR:</h3><p>${error.message}</p>`;
+                console.error('Full error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

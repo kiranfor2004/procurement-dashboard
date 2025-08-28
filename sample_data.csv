@@ -1,0 +1,21 @@
+Vendor,Department,Amount,Date,Diversity,Category,Status,PO_Number
+ABC Corp,IT,15000,2024-01-15,Non-Diverse,Software,Completed,PO001
+XYZ Inc,HR,5000,2024-01-20,Diverse,Services,Pending,PO002
+Tech Solutions,IT,25000,2024-02-10,Diverse,Hardware,Completed,PO003
+Office Supplies Co,Admin,1200,2024-02-15,Non-Diverse,Supplies,Completed,PO004
+Security Systems,Facilities,18000,2024-03-05,Non-Diverse,Security,Completed,PO005
+Green Energy,Utilities,50000,2024-03-12,Diverse,Energy,Completed,PO006
+Data Analytics,IT,35000,2024-04-01,Diverse,Software,Completed,PO007
+Cleaning Services,Facilities,8000,2024-04-10,Diverse,Services,Completed,PO008
+Legal Advisors,Legal,12000,2024-05-01,Non-Diverse,Legal,Completed,PO009
+Marketing Agency,Marketing,22000,2024-05-15,Diverse,Marketing,Completed,PO010
+Construction Co,Facilities,75000,2024-06-01,Non-Diverse,Construction,Completed,PO011
+Consulting Group,Strategy,45000,2024-06-20,Diverse,Consulting,Completed,PO012
+Training Center,HR,8500,2024-07-05,Diverse,Training,Completed,PO013
+Equipment Rental,Operations,15500,2024-07-18,Non-Diverse,Equipment,Completed,PO014
+Financial Services,Finance,28000,2024-08-01,Non-Diverse,Financial,Completed,PO015
+Tech Support,IT,19000,2024-08-15,Diverse,Support,Completed,PO016
+Catering Services,Admin,4500,2024-08-20,Diverse,Catering,Completed,PO017
+Transportation,Logistics,32000,2024-08-25,Non-Diverse,Transport,Completed,PO018
+Research Lab,R&D,65000,2024-08-28,Diverse,Research,Completed,PO019
+Software Vendor,IT,42000,2024-08-29,Non-Diverse,Software,Pending,PO020
