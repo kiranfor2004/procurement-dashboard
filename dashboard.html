@@ -230,142 +230,11 @@
             color: #ffeaa7;
         }
 
-        /* Drill-down Modal Styles */
-        .drill-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-        }
-
-        .drill-modal-content {
-            background-color: white;
-            margin: 2% auto;
-            padding: 0;
-            border-radius: 12px;
-            width: 95%;
-            max-width: 1200px;
-            height: 90vh;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .drill-modal-header {
-            background: linear-gradient(45deg, #2c3e50, #3498db);
-            color: white;
-            padding: 20px;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .drill-modal-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .drill-modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .drill-modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .drill-modal-body {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .drill-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .drill-summary-card {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            border-left: 4px solid #3498db;
-        }
-
-        .drill-summary-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .drill-summary-label {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
-
-        .drill-table-container {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .drill-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        .drill-table th {
-            background: #34495e;
-            color: white;
-            padding: 12px 8px;
-            text-align: left;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .drill-table td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        .drill-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .drill-table tbody tr:nth-child(even) {
-            background: #fdfdfd;
-        }
-
-        .drill-table tbody tr:nth-child(even):hover {
-            background: #f0f0f0;
-        }
-
+        /* Drill-down Navigation Styles */
         .drill-clickable {
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .drill-clickable:hover {
@@ -388,35 +257,6 @@
 
         .drill-clickable:hover .drill-icon {
             opacity: 1;
-        }
-
-        .export-buttons {
-            margin-bottom: 15px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .export-btn {
-            padding: 8px 16px;
-            background: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.3s ease;
-        }
-
-        .export-btn:hover {
-            background: #229954;
-        }
-
-        .export-btn.csv {
-            background: #e67e22;
-        }
-
-        .export-btn.csv:hover {
-            background: #d35400;
         }
 
         .kpi-grid {
@@ -790,40 +630,36 @@
             </div>
         </div>
 
-        <!-- Drill-down Modal -->
-        <div id="drillModal" class="drill-modal">
-            <div class="drill-modal-content">
-                <div class="drill-modal-header">
-                    <h3 id="drillModalTitle" class="drill-modal-title">Detailed Report</h3>
-                    <button class="drill-modal-close" onclick="closeDrillModal()">&times;</button>
-                </div>
-                <div class="drill-modal-body">
-                    <div id="drillSummary" class="drill-summary"></div>
-                    <div class="export-buttons">
-                        <button class="export-btn" onclick="exportDrillData('excel')">📊 Export Excel</button>
-                        <button class="export-btn csv" onclick="exportDrillData('csv')">📄 Export CSV</button>
-                    </div>
-                    <div class="drill-table-container">
-                        <table id="drillTable" class="drill-table">
-                            <thead id="drillTableHead"></thead>
-                            <tbody id="drillTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <script>
         // Configuration
-        // API Configuration - Update this URL when deploying to production
-        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:5001/api'  // Local development
-            : 'https://your-api-domain.herokuapp.com/api'; // Production API (update this URL)
+        // API Configuration - Auto-detect environment
+        const API_URL = (() => {
+            const hostname = window.location.hostname;
+            
+            // Production Azure detection
+            if (hostname.includes('azurewebsites.net')) {
+                return `${window.location.origin}/api`;  // Azure production
+            }
+            
+            // Local development
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                return 'http://localhost:5001/api';
+            }
+            
+            // GitHub Pages or other static hosting
+            if (hostname.includes('github.io') || hostname.includes('netlify') || hostname.includes('vercel')) {
+                return null; // Will trigger demo mode
+            }
+            
+            // Default to current origin for other deployments
+            return `${window.location.origin}/api`;
+        })();
         
-        // GitHub Pages fallback mode (when API is not available)
-        const isGitHubPages = window.location.hostname.includes('github.io');
-        const useStaticMode = isGitHubPages || false; // Set to true for demo mode without API
+        // Demo mode when API is not available
+        const useStaticMode = !API_URL || window.location.hostname.includes('github.io');
         
         // Global chart variables
         let spendChart, vendorChart, diversityChart, departmentChart;
@@ -994,31 +830,6 @@
                 option.textContent = dept;
                 departmentSelect.appendChild(option);
             });
-        }
-
-        // Original dashboard loading (with API)
-        async function loadOriginalDashboard() {
-                
-                // Check if any filters are active
-                const hasActiveFilters = Object.values(currentFilters).some(filter => filter !== 'all');
-                
-                if (hasActiveFilters) {
-                    // Load filtered data
-                    await loadFilteredDashboard();
-                } else {
-                    // Load original unfiltered data
-                    await loadOriginalDashboard();
-                }
-                
-            } catch (error) {
-                console.warn('API not available, switching to demo mode:', error.message);
-                updateStatus('📊 Loading demo data (API unavailable)...', 'loading');
-                await loadStaticDashboard();
-                updateStatus('✅ Dashboard loaded (Demo Mode)', 'success');
-            } finally {
-                refreshBtn.disabled = false;
-                refreshBtn.textContent = 'Refresh';
-            }
         }
 
         // Original dashboard loading (with API)
@@ -1505,42 +1316,29 @@
             loadDashboard();
         });
 
-        // Drill-down functionality
+        // Drill-down functionality - Navigate to separate page
         function openDrillDown(type, additionalData = null) {
-            const modal = document.getElementById('drillModal');
-            const title = document.getElementById('drillModalTitle');
-            const summary = document.getElementById('drillSummary');
-            const tableHead = document.getElementById('drillTableHead');
-            const tableBody = document.getElementById('drillTableBody');
+            // Build URL parameters for drill-down page
+            const params = new URLSearchParams();
+            params.append('type', type);
             
-            // Generate drill-down data based on type
-            const drillData = generateDrillDownData(type, additionalData);
+            if (additionalData) {
+                params.append('value', additionalData);
+            }
             
-            // Set modal title
-            title.textContent = drillData.title;
+            // Add current filter state to preserve context
+            if (currentFilters.department !== 'all') {
+                params.append('department', currentFilters.department);
+            }
+            if (currentFilters.dateRange !== 'all') {
+                params.append('dateRange', currentFilters.dateRange);
+            }
+            if (currentFilters.amountRange !== 'all') {
+                params.append('amountRange', currentFilters.amountRange);
+            }
             
-            // Create summary cards
-            summary.innerHTML = drillData.summary.map(item => `
-                <div class="drill-summary-card">
-                    <div class="drill-summary-value">${item.value}</div>
-                    <div class="drill-summary-label">${item.label}</div>
-                </div>
-            `).join('');
-            
-            // Create table headers
-            tableHead.innerHTML = `<tr>${drillData.headers.map(header => `<th>${header}</th>`).join('')}</tr>`;
-            
-            // Create table rows
-            tableBody.innerHTML = drillData.rows.map(row => `
-                <tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>
-            `).join('');
-            
-            // Show modal
-            modal.style.display = 'block';
-        }
-
-        function closeDrillModal() {
-            document.getElementById('drillModal').style.display = 'none';
+            // Navigate to drill-down page via Flask route
+            window.location.href = `/drill-down.html?${params.toString()}`;
         }
 
         // Generate drill-down data based on type
@@ -1925,59 +1723,6 @@
         // Helper functions
         function hasActiveFilters() {
             return Object.values(currentFilters).some(filter => filter !== 'all');
-        }
-
-        // Export functionality
-        function exportDrillData(format) {
-            const table = document.getElementById('drillTable');
-            const title = document.getElementById('drillModalTitle').textContent;
-            
-            if (format === 'csv') {
-                exportToCSV(table, title);
-            } else if (format === 'excel') {
-                exportToExcel(table, title);
-            }
-        }
-
-        function exportToCSV(table, filename) {
-            let csv = [];
-            const rows = table.querySelectorAll('tr');
-            
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].querySelectorAll('th, td');
-                const row = [];
-                for (let j = 0; j < cells.length; j++) {
-                    row.push('"' + cells[j].textContent.replace(/"/g, '""') + '"');
-                }
-                csv.push(row.join(','));
-            }
-            
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename.replace(/[^a-z0-9]/gi, '_') + '.csv';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-
-        function exportToExcel(table, filename) {
-            // Simple Excel export using data URI
-            const tableHtml = table.outerHTML;
-            const dataUri = 'data:application/vnd.ms-excel;base64,' + btoa(unescape(encodeURIComponent(tableHtml)));
-            const a = document.createElement('a');
-            a.href = dataUri;
-            a.download = filename.replace(/[^a-z0-9]/gi, '_') + '.xls';
-            a.click();
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('drillModal');
-            if (event.target === modal) {
-                closeDrillModal();
-            }
         }
 
         // Setup filter event handlers
