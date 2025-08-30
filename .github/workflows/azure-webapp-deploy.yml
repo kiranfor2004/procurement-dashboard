@@ -1,0 +1,92 @@
+# GitHub Actions workflow to deploy Python Flask app to Azure App Service
+name: Deploy to Azure App Service
+
+# Trigger the workflow on push to main branch
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Environment variables
+env:
+  AZURE_WEBAPP_NAME: 'Procurementdashboard'  # Your actual Azure webapp name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  PYTHON_VERSION: '3.11'
+
+# Permissions needed for the workflow
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    # Set up Python
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    # Create and activate virtual environment
+    - name: Create and start virtual environment
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+    
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    # Optional: Run tests (uncomment if you have tests)
+    # - name: Run tests
+    #   run: |
+    #     source venv/bin/activate
+    #     python -m pytest
+    
+    # Create deployment artifact
+    - name: Create deployment package
+      run: |
+        zip -r deployment.zip . -x "*.git*" "venv/*" "__pycache__/*" "*.pyc" "dashboard_env/*"
+    
+    # Upload artifact for deployment job
+    - name: Upload artifact for deployment jobs
+      uses: actions/upload-artifact@v3
+      with:
+        name: python-app
+        path: deployment.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    
+    steps:
+    # Download artifact from build job
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v3
+      with:
+        name: python-app
+    
+    # Extract deployment package
+    - name: Extract deployment package
+      run: unzip deployment.zip
+    
+    # Deploy to Azure App Service
+    - name: Deploy to Azure App Service
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
