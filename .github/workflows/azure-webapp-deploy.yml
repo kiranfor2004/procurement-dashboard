@@ -82,6 +82,12 @@ jobs:
     - name: Extract deployment package
       run: unzip deployment.zip
     
+    # Login to Azure
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+    
     # Deploy to Azure App Service
     - name: Deploy to Azure App Service
       id: deploy-to-webapp
